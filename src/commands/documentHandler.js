@@ -4,7 +4,8 @@ import { ensureUserDirectory } from '../utils/fileUtils.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { validateFile } from '../utils/fileValidation.js';
 import { sanitizeFilename, validateUsername } from '../utils/security.js';
-import { DirectoryError } from '../utils/directoryError.js';
+import { DirectoryError } from '../utils/errors.js';
+  
 
 export const handleDocument = asyncHandler(async (ctx) => {
   // Get file and user info
