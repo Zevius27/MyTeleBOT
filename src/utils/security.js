@@ -1,7 +1,10 @@
-
 import path from 'path';
 
 export const sanitizeFilename = (filename) => {
+  if (!filename || typeof filename !== 'string') {
+    throw new Error('Invalid filename');
+  }
+
   // Remove any path traversal attempts
   const sanitized = path.basename(filename);
   
@@ -9,12 +12,14 @@ export const sanitizeFilename = (filename) => {
   const extension = path.extname(sanitized);
   const name = path.basename(sanitized, extension);
   
-  // Clean the name part only, preserving the extension
-  const cleanedName = name.replace(/[<>:"\/\\|?*]/g, '');
+  // Clean the name part while preserving valid characters
+  const cleanedName = name.replace(/[^a-zA-Z0-9_\-\s]/g, '')
+                          .trim()
+                          .replace(/\s+/g, '_');
   
-  // Handle case where name is empty after cleaning
+  // Handle empty name case
   if (!cleanedName) {
-    return extension;
+    return `file_${Date.now()}${extension}`;
   }
   
   return `${cleanedName}${extension}`;
