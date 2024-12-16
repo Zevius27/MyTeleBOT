@@ -9,7 +9,7 @@ dotenv.config();
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
