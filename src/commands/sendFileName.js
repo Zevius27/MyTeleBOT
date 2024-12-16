@@ -1,7 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import fs from 'fs';
 import path from 'path';
-import { validateUsername } from "../utils/validateUsername.js";
+import { validateUsername } from "../utils/fileValidation.js";
 
 export const handleSendFileName = asyncHandler(async (ctx) => {
    const rawUsername = ctx.message.from.username || `user_${ctx.message.from.id}`;
