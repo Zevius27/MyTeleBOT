@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { asyncHandler } from '../../utils/asyncHandler.js';
-import { DirectoryError, SecurityError } from '../../utils/security.js';
-
+import { DirectoryError } from '../../utils/errors.js';
+import { SecurityError } from '../../utils/security.js';
 describe('AsyncHandler', () => {
   it('should handle successful operations', async () => {
     const mockFn = vi.fn().mockResolvedValue('success');

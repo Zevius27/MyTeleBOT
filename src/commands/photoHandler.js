@@ -4,6 +4,7 @@ import { ensureUserDirectory } from '../utils/fileUtils.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { validateFile } from '../utils/fileValidation.js';
 import { sanitizeFilename, validateUsername } from '../utils/security.js';
+import { DirectoryError } from '../utils/errors.js';
 
 export const handlePhoto = asyncHandler(async (ctx) => {
   // Get the largest photo size available
@@ -28,26 +29,30 @@ export const handlePhoto = asyncHandler(async (ctx) => {
 
   // Get file link and prepare directory
   const fileLink = await ctx.telegram.getFileLink(photo.file_id);
-  const userDir = ensureUserDirectory(username);
+  const userDir = await ensureUserDirectory(username);
 
   // Download file
   const response = await fetch(fileLink);
   if (!response.ok) {
-    throw new Error('Failed to download photo from Telegram');
+    throw new DirectoryError('Failed to download photo from Telegram');
   }
 
-  // Process file
-  const buffer = await response.arrayBuffer().then(Buffer.from);
-  const sanitizedName = sanitizeFilename(photoFile.file_name);
-  const filePath = `${userDir}/${sanitizedName}`;
+  try {
+    // Process file
+    const buffer = await response.arrayBuffer().then(Buffer.from);
+    const sanitizedName = sanitizeFilename(photoFile.file_name);
+    const filePath = `${userDir}/${sanitizedName}`;
 
-  // Save file asynchronously
-  await fs.promises.writeFile(filePath, buffer);
+    // Save file asynchronously
+    await fs.promises.writeFile(filePath, buffer);
 
-  // Send success message with copyable filename
-  await ctx.reply(
-    `Photo saved successfully!\n` +
-    `Saved as: <code>${sanitizedName}</code>`,
-    { parse_mode: 'HTML' }
-  );
+    // Send success message with copyable filename
+    await ctx.reply(
+      `Photo saved successfully!\n` +
+      `Saved as: <code>${sanitizedName}</code>`,
+      { parse_mode: 'HTML' }
+    );
+  } catch (error) {
+    throw new DirectoryError(`Failed to save photo: ${error.message}`);
+  }
 }); 

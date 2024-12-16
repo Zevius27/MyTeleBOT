@@ -4,6 +4,7 @@ import { ensureUserDirectory } from '../utils/fileUtils.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { validateFile } from '../utils/fileValidation.js';
 import { sanitizeFilename, validateUsername } from '../utils/security.js';
+import { DirectoryError } from '../utils/errors.js';
 
 export const handleVideo = asyncHandler(async (ctx) => {
   // Get video info
@@ -25,27 +26,31 @@ export const handleVideo = asyncHandler(async (ctx) => {
 
   // Get file link and prepare directory
   const fileLink = await ctx.telegram.getFileLink(video.file_id);
-  const userDir = ensureUserDirectory(username);
+  const userDir = await ensureUserDirectory(username);
 
   // Download file
   const response = await fetch(fileLink);
   if (!response.ok) {
-    throw new Error('Failed to download video from Telegram');
+    throw new DirectoryError('Failed to download video from Telegram');
   }
 
-  // Process file
-  const buffer = await response.arrayBuffer().then(Buffer.from);
-  const sanitizedName = sanitizeFilename(videoFile.file_name,"mp4");
-  const filePath = `${userDir}/${sanitizedName}`;
+  try {
+    // Process file
+    const buffer = await response.arrayBuffer().then(Buffer.from);
+    const sanitizedName = sanitizeFilename(videoFile.file_name);
+    const filePath = `${userDir}/${sanitizedName}`;
 
-  // Save file asynchronously
-  await fs.promises.writeFile(filePath, buffer);
+    // Save file asynchronously
+    await fs.promises.writeFile(filePath, buffer);
 
-  // Send success message with copyable filenames
-  await ctx.reply(
-    `Video saved successfully!\n` +
-    `Original name: <code>${videoFile.file_name}</code>\n` +
-    `Saved as: <code>${sanitizedName}</code>`,
-    { parse_mode: 'HTML' }
-  );
+    // Send success message with copyable filenames
+    await ctx.reply(
+      `Video saved successfully!\n` +
+      `Original name: <code>${videoFile.file_name}</code>\n` +
+      `Saved as: <code>${sanitizedName}</code>`,
+      { parse_mode: 'HTML' }
+    );
+  } catch (error) {
+    throw new DirectoryError(`Failed to save video: ${error.message}`);
+  }
 }); 
