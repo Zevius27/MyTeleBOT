@@ -1,9 +1,11 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import fs from 'fs';
 import path from 'path';
+import { validateUsername } from "../utils/validateUsername.js";
 
 export const handleSendFileName = asyncHandler(async (ctx) => {
-   const user = ctx.message.from.username;
+   const rawUsername = ctx.message.from.username || `user_${ctx.message.from.id}`;
+   const user = validateUsername(rawUsername);
    const userDir = process.env.DOWNLOAD_BASE_PATH;
    
    if (!userDir) {
