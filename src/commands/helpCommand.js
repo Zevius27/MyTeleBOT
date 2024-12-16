@@ -6,7 +6,7 @@ export const handleHelp = async (ctx) => {
      '/help - Show this help message\n' +
      '/rename - Rename a saved file\n' +
      '/delete - Delete a saved file\n' +
-     '/sendFileName - Show the name of the file you sent\n' +
+     '/sendfilename - Show the name of the file you sent\n' +
      '/test - Test if bot is working\n\n' +
      
      'Supported file types:\n' +

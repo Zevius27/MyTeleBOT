@@ -14,7 +14,7 @@ export const registerCommands = (bot) => {
   bot.command('help', handleHelp);
   bot.command('test', handleTest);
   bot.command('rename', handleRename);
-  bot.command('sendFileName', handleSendFileName);
+  bot.command('sendfilename', handleSendFileName);
   bot.command('delete', handleDelete);
   // File handlers
   bot.on('document', handleDocument);
