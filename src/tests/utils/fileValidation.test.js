@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { validateFile, FileTypeError, FileSizeError } from '../../utils/fileValidation.js';
+import { validateFile } from '../../utils/fileValidation.js';
+import { FileTypeError, FileSizeError } from '../../utils/errors.js';
 
 describe('File Validation', () => {
   it('should accept valid files', () => {

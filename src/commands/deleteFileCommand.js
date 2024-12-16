@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { validateUsername } from '../utils/security.js';
-import { DirectoryError } from '../utils/directoryError.js';
+import { DirectoryError } from '../utils/errors.js';
 
 export const handleDelete = asyncHandler(async (ctx) => {
   // Get filename from command

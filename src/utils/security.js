@@ -1,11 +1,5 @@
 import path from 'path';
-
-export class SecurityError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = 'SecurityError';
-  }
-}
+import { SecurityError } from './errors.js';
 
 export const sanitizeFilename = (filename) => {
   if (!filename || typeof filename !== 'string') {

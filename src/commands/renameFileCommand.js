@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { sanitizeFilename, validateUsername } from '../utils/security.js';
-import { DirectoryError } from '../utils/directoryError.js';
+import { DirectoryError } from '../utils/errors.js';
 
 export const handleRename = asyncHandler(async (ctx) => {
 //   console.log('Renaming file command received');
