@@ -5,7 +5,7 @@ import path from 'path';
 
 export const handleSendFileName = asyncHandler(async (ctx) => {
    const user = ctx.message.from.username;
-   // console.log(user);
+   console.log(user);
    let userDir = process.env.DOWNLOAD_BASE_PATH;
    // Use path.join to safely combine path segments across different operating systems
    let userDirPath = path.join(userDir, user);
