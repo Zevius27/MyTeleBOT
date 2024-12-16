@@ -1,19 +1,23 @@
-import crypto from 'crypto';
+
 import path from 'path';
 
 export const sanitizeFilename = (filename) => {
   // Remove any path traversal attempts
   const sanitized = path.basename(filename);
   
-  // Remove any non-alphanumeric characters except for - _ . and space
-  const cleaned = sanitized.replace(/[^a-zA-Z0-9\-_\. ]/g, '');
+  // Get the extension and name parts
+  const extension = path.extname(sanitized);
+  const name = path.basename(sanitized, extension);
   
-  // Add random suffix for uniqueness
-  const extension = path.extname(cleaned);
-  const name = path.basename(cleaned, extension);
-  const randomSuffix = crypto.randomBytes(4).toString('hex');
+  // Clean the name part only, preserving the extension
+  const cleanedName = name.replace(/[<>:"\/\\|?*]/g, '');
   
-  return `${name}_${randomSuffix}${extension}`;
+  // Handle case where name is empty after cleaning
+  if (!cleanedName) {
+    return extension;
+  }
+  
+  return `${cleanedName}${extension}`;
 };
 
 export const validateUsername = (username) => {

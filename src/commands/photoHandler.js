@@ -44,9 +44,10 @@ export const handlePhoto = asyncHandler(async (ctx) => {
   // Save file asynchronously
   await fs.promises.writeFile(filePath, buffer);
 
-  // Send success message
+  // Send success message with copyable filename
   await ctx.reply(
     `Photo saved successfully!\n` +
-    `Saved as: ${sanitizedName}`
+    `Saved as: <code>${sanitizedName}</code>`,
+    { parse_mode: 'HTML' }
   );
 }); 

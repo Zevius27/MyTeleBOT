@@ -35,16 +35,17 @@ export const handleVideo = asyncHandler(async (ctx) => {
 
   // Process file
   const buffer = await response.arrayBuffer().then(Buffer.from);
-  const sanitizedName = sanitizeFilename(videoFile.file_name);
+  const sanitizedName = sanitizeFilename(videoFile.file_name,"mp4");
   const filePath = `${userDir}/${sanitizedName}`;
 
   // Save file asynchronously
   await fs.promises.writeFile(filePath, buffer);
 
-  // Send success message
+  // Send success message with copyable filenames
   await ctx.reply(
     `Video saved successfully!\n` +
-    `Original name: ${videoFile.file_name}\n` +
-    `Saved as: ${sanitizedName}`
+    `Original name: <code>${videoFile.file_name}</code>\n` +
+    `Saved as: <code>${sanitizedName}</code>`,
+    { parse_mode: 'HTML' }
   );
 }); 

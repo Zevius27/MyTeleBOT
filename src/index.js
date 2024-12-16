@@ -30,6 +30,19 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
+// Basic routes
+app.get('/', (req, res) => {
+  console.log('GET request received');
+  console.log(req.body);
+  res.send('Welcome to the Telegram Bot API');
+});
+
+app.post('/', (req, res) => {
+  console.log('POST request received');
+  console.log(req.body);
+  res.json({ message: 'POST request received successfully' });
+});
+
 // Register all bot commands
 registerCommands(bot);
 
@@ -47,4 +60,3 @@ app.listen(port, (err) => {
 });
 
 export { app };
-
