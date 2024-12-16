@@ -4,6 +4,7 @@ import { ensureUserDirectory } from '../utils/fileUtils.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { validateFile } from '../utils/fileValidation.js';
 import { sanitizeFilename, validateUsername } from '../utils/security.js';
+import { DirectoryError } from '../utils/directoryError.js';
 
 export const handleDocument = asyncHandler(async (ctx) => {
   // Get file and user info
@@ -24,7 +25,7 @@ export const handleDocument = asyncHandler(async (ctx) => {
   // Download file
   const response = await fetch(fileLink);
   if (!response.ok) {
-    throw new Error('Failed to download file from Telegram');
+    throw new DirectoryError('Failed to download file from Telegram');
   }
 
   // Process file

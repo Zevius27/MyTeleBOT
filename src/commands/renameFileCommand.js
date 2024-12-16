@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { sanitizeFilename, validateUsername } from '../utils/security.js';
+import { DirectoryError } from '../utils/directoryError.js';
 
 export const handleRename = asyncHandler(async (ctx) => {
 //   console.log('Renaming file command received');
@@ -66,7 +67,6 @@ export const handleRename = asyncHandler(async (ctx) => {
       { parse_mode: 'HTML' }
     );
   } catch (error) {
-    await ctx.reply('Failed to rename file. Please try again.');
-    throw error; // Re-throw for logging purposes
+    throw new DirectoryError(`Failed to rename file: ${error.message}`);
   }
 }); 

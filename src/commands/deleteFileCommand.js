@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { validateUsername } from '../utils/security.js';
+import { DirectoryError } from '../utils/directoryError.js';
 
 export const handleDelete = asyncHandler(async (ctx) => {
   // Get filename from command
@@ -53,7 +54,6 @@ export const handleDelete = asyncHandler(async (ctx) => {
       { parse_mode: 'HTML' }
     );
   } catch (error) {
-    await ctx.reply('Failed to delete file. Please try again.');
-    throw error;
+    throw new DirectoryError(`Failed to delete file: ${error.message}`);
   }
 }); 

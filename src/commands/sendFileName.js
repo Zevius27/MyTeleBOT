@@ -2,6 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import fs from 'fs';
 import path from 'path';
 import { validateUsername } from "../utils/security.js";
+import { DirectoryError } from "../utils/directoryError.js";
 
 export const handleSendFileName = asyncHandler(async (ctx) => {
   const rawUsername = ctx.message.from.username || `user_${ctx.message.from.id}`;
@@ -9,8 +10,7 @@ export const handleSendFileName = asyncHandler(async (ctx) => {
   const baseDir = process.env.DOWNLOAD_BASE_PATH;
    
   if (!baseDir) {
-    await ctx.reply('Error: Download path not configured');
-    return;
+    throw new DirectoryError('DOWNLOAD_BASE_PATH environment variable is not configured');
   }
 
   const userDirPath = path.join(baseDir, username);

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { asyncHandler } from '../../utils/asyncHandler.js';
+import { DirectoryError, SecurityError } from '../../utils/security.js';
 
 describe('AsyncHandler', () => {
   it('should handle successful operations', async () => {
@@ -41,5 +42,31 @@ describe('AsyncHandler', () => {
     await handler(mockCtx);
 
     expect(mockCtx.reply).toHaveBeenCalledWith('File size exceeds the maximum limit');
+  });
+
+  it('should handle DirectoryError', async () => {
+    const error = new DirectoryError('Directory error');
+    const mockFn = vi.fn().mockRejectedValue(error);
+    const mockCtx = {
+      reply: vi.fn()
+    };
+
+    const handler = asyncHandler(mockFn);
+    await handler(mockCtx);
+
+    expect(mockCtx.reply).toHaveBeenCalledWith('Error accessing file directory');
+  });
+
+  it('should handle SecurityError', async () => {
+    const error = new SecurityError('Security error');
+    const mockFn = vi.fn().mockRejectedValue(error);
+    const mockCtx = {
+      reply: vi.fn()
+    };
+
+    const handler = asyncHandler(mockFn);
+    await handler(mockCtx);
+
+    expect(mockCtx.reply).toHaveBeenCalledWith('Security check failed');
   });
 }); 

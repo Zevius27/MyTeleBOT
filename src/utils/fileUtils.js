@@ -1,25 +1,33 @@
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
+import { DirectoryError } from './errors.js';
+import { validateUsername } from './security.js';
 
-export function ensureUserDirectory(username) {
-  const baseDir = process.env.DOWNLOAD_BASE_PATH;
-  if (!baseDir) {
-    throw new Error('DOWNLOAD_BASE_PATH not configured');
-  }
+export async function ensureUserDirectory(rawUsername) {
+  try {
+    const username = validateUsername(rawUsername);
+    const baseDir = process.env.DOWNLOAD_BASE_PATH;
+    
+    if (!baseDir) {
+      throw new DirectoryError('DOWNLOAD_BASE_PATH environment variable is not configured');
+    }
 
-  const userDir = path.join(baseDir, username);
-  const normalizedPath = path.normalize(userDir);
+    const userDir = path.join(baseDir, username);
+    const normalizedPath = path.normalize(userDir);
 
-  // Ensure the path doesn't escape baseDir
-  if (!normalizedPath.startsWith(baseDir)) {
-    throw new Error('Invalid directory path');
-  }
+    if (!normalizedPath.startsWith(baseDir)) {
+      throw new DirectoryError(
+        `Invalid directory path detected. Path "${normalizedPath}" attempts to escape base directory`
+      );
+    }
 
-  if (!fs.existsSync(baseDir)) {
-    fs.mkdirSync(baseDir, { recursive: true });
+    await fs.mkdir(baseDir, { recursive: true });
+    await fs.mkdir(userDir, { recursive: true });
+    return userDir;
+  } catch (error) {
+    if (!(error instanceof DirectoryError)) {
+      throw new DirectoryError(`Directory operation failed: ${error.message}`);
+    }
+    throw error;
   }
-  if (!fs.existsSync(userDir)) {
-    fs.mkdirSync(userDir, { recursive: true });
-  }
-  return userDir;
 } 

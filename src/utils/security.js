@@ -1,8 +1,15 @@
 import path from 'path';
 
+export class SecurityError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'SecurityError';
+  }
+}
+
 export const sanitizeFilename = (filename) => {
   if (!filename || typeof filename !== 'string') {
-    throw new Error('Invalid filename');
+    throw new SecurityError('Invalid filename');
   }
 
   // Remove any path traversal attempts
@@ -27,7 +34,7 @@ export const sanitizeFilename = (filename) => {
 
 export const validateUsername = (username) => {
   if (!username || typeof username !== 'string') {
-    throw new Error('Invalid username');
+    throw new SecurityError('Invalid username');
   }
   
   // Remove any path traversal attempts and special characters
