@@ -31,8 +31,8 @@ export const handleDocument = asyncHandler(async (ctx) => {
 
     if (!fs.existsSync(userDir)) {
       await ctx.reply('Creating user directory...');
-      await ensureUserDirectory(username);
       await ctx.reply('Directory created successfully! Processing your document...');
+      await ensureUserDirectory(username);
     }
 
     // Get file link

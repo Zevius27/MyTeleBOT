@@ -31,8 +31,8 @@ export const handleVideo = asyncHandler(async (ctx) => {
 
     if (!fs.existsSync(userDir)) {
       await ctx.reply('Creating user directory...');
-      await ensureUserDirectory(username);
       await ctx.reply('Directory created successfully! Processing your video...');
+      await ensureUserDirectory(username);
     }
 
     // Get file link
