@@ -13,7 +13,7 @@ export async function ensureUserDirectory(rawUsername) {
     }
 
     const userDir = path.join(baseDir, username);
-    console.log(userDir);
+    // console.log(userDir);
     const normalizedPath = path.normalize(userDir);
 
     await fs.mkdir(baseDir, { recursive: true });// creates the base directory if it doesn't exist
@@ -33,7 +33,7 @@ export async function ensureUserDirectory(rawUsername) {
 
 
 export async function validateDirectoryPath(normalizedPath, baseDir) {
-  if (!normalizedPath.startsWith(baseDir)) {
+  if (normalizedPath.startsWith(baseDir)) {
     throw new DirectoryError(
       `Invalid directory path detected. Path "${normalizedPath}" attempts to escape base directory`
     );
