@@ -13,17 +13,15 @@ export async function ensureUserDirectory(rawUsername) {
     }
 
     const userDir = path.join(baseDir, username);
+    console.log(userDir);
     const normalizedPath = path.normalize(userDir);
 
-    if (!normalizedPath.startsWith(baseDir)) {
-      throw new DirectoryError(
-        `Invalid directory path detected. Path "${normalizedPath}" attempts to escape base directory`
-      );
-    }
+    await fs.mkdir(baseDir, { recursive: true });// creates the base directory if it doesn't exist
+    await fs.mkdir(userDir, { recursive: true });// creates the user directory if it doesn't exist
 
-    await fs.mkdir(baseDir, { recursive: true });
-    await fs.mkdir(userDir, { recursive: true });
+    await validateDirectoryPath(normalizedPath, baseDir);
     return userDir;
+
   } catch (error) {
     if (!(error instanceof DirectoryError)) {
       throw new DirectoryError(`Directory operation failed: ${error.message}`);
@@ -31,3 +29,15 @@ export async function ensureUserDirectory(rawUsername) {
     throw error;
   }
 } 
+
+
+
+export async function validateDirectoryPath(normalizedPath, baseDir) {
+  if (!normalizedPath.startsWith(baseDir)) {
+    throw new DirectoryError(
+      `Invalid directory path detected. Path "${normalizedPath}" attempts to escape base directory`
+    );
+  }
+}
+
+

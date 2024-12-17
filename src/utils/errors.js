@@ -8,27 +8,27 @@ export class ValidationError extends Error {
 export class DirectoryError extends Error {
   constructor(message) {
     super(message);
-    this.name = 'DirectoryError';
+    this.name = 'DirectoryError';// will be used to handle errors related to directories
   }
 }
 
 export class FileTypeError extends Error {
   constructor(message) {
     super(message);
-    this.name = 'FileTypeError';
+    this.name = 'FileTypeError';// will be used to handle errors related to file type
   }
 }
 
 export class FileSizeError extends Error {
   constructor(message) {
     super(message);
-    this.name = 'FileSizeError';
+    this.name = 'FileSizeError';// will be used to handle errors related to file size
   }
 }
 
 export class SecurityError extends Error {
   constructor(message) {
     super(message);
-    this.name = 'SecurityError';
+    this.name = 'SecurityError';// will be used to handle errors related to security
   }
 }
