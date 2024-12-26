@@ -5,9 +5,12 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 import { validateFile } from '../utils/fileValidation.js';
 import { sanitizeFilename, validateUsername } from '../utils/security.js';
 import { DirectoryError } from '../utils/errors.js';
+import {handleTextMessage} from './textMessageHandler.js';
 
 export const handlePhoto = asyncHandler(async (ctx) => {
   try {
+    await handleTextMessage(ctx);
+
     // Initial response
     await ctx.reply('Processing your photo...');
 
@@ -22,7 +25,8 @@ export const handlePhoto = asyncHandler(async (ctx) => {
     // Create a file-like object for initial check
     const photoFile = {
       file_size: photo.file_size,
-      file_name: `photo_${Date.now()}.jpg`
+      file_name: `photo_${Date.now()}.jpg`,
+      file_path: photo.file_path
     };
 
     // Validate file before directory operations
@@ -37,7 +41,6 @@ export const handlePhoto = asyncHandler(async (ctx) => {
       await ctx.reply('Directory created successfully! Processing your photo...');
       await ensureUserDirectory(username);
     }
-
     // Get file link
     const fileLink = await ctx.telegram.getFileLink(photo.file_id);
     
@@ -54,14 +57,13 @@ export const handlePhoto = asyncHandler(async (ctx) => {
 
     // Save file asynchronously
     await fs.promises.writeFile(filePath, buffer);
-
-    // Send success message with copyable filename
     await ctx.reply(
       `Photo saved successfully!\n` +
-      `Saved as: <code>${sanitizedName}</code>`,
+      `Saved as: <code>${sanitizedName}</code>\n` +
+      `Path: <code>${filePath}</code>\n` +
+      `File size: <code>${photoFile.file_size}</code>`,
       { parse_mode: 'HTML' }
     );
-    
   } catch (error) {
     console.error(error);
     throw error;

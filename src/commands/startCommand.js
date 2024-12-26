@@ -8,8 +8,11 @@ export const handleStart = async (ctx) => {
     '/rename - Rename your saved files\n' +
     '/sendfilename - Show the name of the file you sent\n' +
     '/delete - Delete your saved files\n' +
-    '/test - Test if the bot is working\n\n' +
+    '/test - Test if the bot is working\n' +
+    '/fetchmodels - Fetch available models from the API\n' +
     'You can also send me documents, photos, or videos to store them.'
+    + '\n\n' +
+    'You can also talk directly to Gemini by sending me text messages.'
   );
 
 }; 
