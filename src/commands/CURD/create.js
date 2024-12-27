@@ -7,13 +7,15 @@
 // import fs from 'fs/promises';
 // import path from 'path';
 import { DirectoryError } from '../../utils/errors.js';
+import fs from 'fs/promises';
+import path from 'path';
 
-
-
-export const createOperation = async (data) => {
+export const createOperation = async (ctx, fileInfo) => {
   try {
     // Logic to create a resource
     // For example, saving data to a database or file
+    
+    
     return ['create', 'success', 'Resource created successfully'];  
   } catch (error) {
     throw new DirectoryError('Failed to create resource: ' + error.message);

@@ -91,16 +91,18 @@ export const handleTextMessage = asyncHandler(async (ctx) => {
 
     // Send the response back to the user
 
-    if (lammaMessage[0] === '[') {
-      // console.log('The response is an array:', lammaMessage + '\n\n\n');
+    if (lammaMessage[0] === '{') {
+      console.log('The response is an object:', lammaMessage + '\n\n\n');
       // const responseArray = JSON.parse(lammaMessage); // Parse the JSON string into an array
       // console.log('Extracted Array:', responseArray); // Log the extracted array separately
       // await ctx.reply(responseArray + '\n\n\n'); // Send the array to the user
       // await ctx.reply(responseArray[2]); // Send the response to the user
       indexCURD(ctx, lammaMessage);
+      
     } else {
       console.log('Baigan');
       await ctx.reply(lammaMessage);
+      await ctx.reply(`\n\n\n\n`+lammaMessage[0]);
     }
   } catch (error) {
     console.error('Error while communicating with LAMMA:', error.message);
@@ -114,39 +116,41 @@ export const handleTextMessage = asyncHandler(async (ctx) => {
 
 // AI CURD operations
 async function indexCURD(ctx, lammaMessage) {
-  const responseArray = JSON.parse(lammaMessage); // Parse the JSON string into an array
-  const [operation, status, response] = responseArray;
-  
-  if (status === 'success') {
-    await ctx.reply('Operation successful!');
-    await ctx.reply(result[2]); // Send the response back to the user
-  } else if (status === 'pending') {
-    await ctx.reply('Your request is pending. Please wait for further updates.');
-  } else if (status === 'aborted' || status === 'error') {
-    await ctx.reply('An error occurred during the operation: ' + result[2]);
-  }
+  let result;
+  const { operation, status, message, file } = JSON.parse(lammaMessage);
   try {
     ctx.reply('Your request is being processed.');
-    let result;
     switch (operation) {
       case 'create':
-        result = await createOperation(response);// Is in create.js
+        result = await createOperation(ctx, file);// Is in create.js
         await ctx.reply(result[2]);
+        await ctx.reply(lammaMessage);
         break;
       case 'read':
-        result = await readOperation(response); // Is in read.js 
+        result = await readOperation(ctx, file); // Is in read.js 
         await ctx.reply(result[2]);
+        await ctx.reply(lammaMessage); 
         break;
       case 'update':
-        result = await updateOperation(response.id, response.newData); // Is in update.js
+        result = await updateOperation(ctx, file); // Is in update.js
         await ctx.reply(result[2]);
+        await ctx.reply(lammaMessage);
         break;
       case 'delete':
-        result = await deleteOperation(response.id);// Is in delete.js
+        result = await deleteOperation(ctx,file); // Is in delete.js
         await ctx.reply(result[2]);
+        await ctx.reply(lammaMessage);
         break;
       default:
         throw new Error('Invalid operation');
+    }
+    if (status === 'success') {
+      await ctx.reply('Operation successful!');
+      await ctx.reply(result[2]); // Send the response back to the user
+    } else if (status === 'pending') {
+      await ctx.reply('Your request is pending. Please wait for further updates.');
+    } else if (status === 'aborted' || status === 'error') {
+      await ctx.reply('An error occurred during the operation: ' + result[2]);
     }
     // console.log(result);
   } catch (error) {

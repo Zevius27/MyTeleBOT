@@ -5,11 +5,11 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 import { validateFile } from '../utils/fileValidation.js';
 import { sanitizeFilename, validateUsername } from '../utils/security.js';
 import { DirectoryError } from '../utils/errors.js';
-import {handleTextMessage} from './textMessageHandler.js';
+// import {handleTextMessage} from './textMessageHandler.js';
 
 export const handlePhoto = asyncHandler(async (ctx) => {
   try {
-    await handleTextMessage(ctx);
+    // await handleTextMessage(ctx);
 
     // Initial response
     await ctx.reply('Processing your photo...');
