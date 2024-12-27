@@ -17,8 +17,8 @@ export const handleHelp = async (ctx) => {
       '- Images (JPG, JPEG, PNG)\n' +
       '- Videos (MP4, MOV, AVI)\n\n' +
       'Maximum file size: 50MB\n\n' +
-      'Your files are stored securely and organized by your username.',
-
+      'Your files are stored securely in the downloads directory and organized by your username. ' +
+      'You can manage your files using the available commands.',
     { parse_mode: 'HTML' }
   );
 };
