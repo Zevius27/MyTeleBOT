@@ -1,80 +1,31 @@
 import 'dotenv/config'; // Load environment variables from .env file
 import fetch from 'node-fetch';
 import { asyncHandler } from '../utils/asyncHandler.js';
+import fs from 'fs/promises'; // Import fs/promises for async file operations
+import path from 'path';
+import { validateUsername } from '../utils/security.js';
+
 
 // Define the handleTextMessage function
 export const handleTextMessage = asyncHandler(async (ctx) => {
   const userMessage = ctx.message.text;
-  let model;
+  const model = process.env.MODEL_NAME;
 
-  const selectModel = async (userMessage) => {
-    let model; // Declare model variable
-    switch(userMessage) {
-      case 'hf:Qwen/Qwen2.5-Coder-32B-Instruct':
-        model = 'hf:Qwen/Qwen2.5-Coder-32B-Instruct';
-        break;
-      case 'hf:Qwen/Qwen2.5-72B-Instruct':
-        model = 'hf:Qwen/Qwen2.5-72B-Instruct';
-        break;
-      case 'hf:meta-llama/Llama-3.1-405B-Instruct':
-        model = 'hf:meta-llama/Llama-3.1-405B-Instruct';
-        break;
-      case 'hf:mistralai/Mistral-7B-Instruct-v0.3':
-        model = 'hf:mistralai/Mistral-7B-Instruct-v0.3';
-        break;
-      case 'hf:huihui-ai/Llama-3.3-70B-Instruct-abliterated':
-        model = 'hf:huihui-ai/Llama-3.3-70B-Instruct-abliterated';
-        break;
-      case 'hf:meta-llama/Llama-3.1-70B-Instruct':
-        model = 'hf:meta-llama/Llama-3.1-70B-Instruct';
-        break;
-      case 'hf:meta-llama/Llama-3.1-8B-Instruct':
-        model = 'hf:meta-llama/Llama-3.1-8B-Instruct';
-        break;
-      case 'hf:meta-llama/Llama-3.2-3B-Instruct':
-        model = 'hf:meta-llama/Llama-3.2-3B-Instruct';
-        break;
-      case 'hf:meta-llama/Llama-3.2-11B-Vision-Instruct':
-        model = 'hf:meta-llama/Llama-3.2-11B-Vision-Instruct';
-        break;
-      case 'hf:meta-llama/Llama-3.2-90B-Vision-Instruct':
-        model = 'hf:meta-llama/Llama-3.2-90B-Vision-Instruct';
-        break;
-      case 'hf:meta-llama/Llama-3.3-70B-Instruct':
-        model = 'hf:meta-llama/Llama-3.3-70B-Instruct';
-        break;
-      case 'hf:google/gemma-2-9b-it':
-        model = 'hf:google/gemma-2-9b-it';
-        break;
-      case 'hf:google/gemma-2-27b-it':
-        model = 'hf:google/gemma-2-27b-it';
-        break;
-      case 'hf:mistralai/Mixtral-8x7B-Instruct-v0.1':
-        model = 'hf:mistralai/Mixtral-8x7B-Instruct-v0.1';
-        break;
-      case 'hf:mistralai/Mixtral-8x22B-Instruct-v0.1':
-        model = 'hf:mistralai/Mixtral-8x22B-Instruct-v0.1';
-        break;
-      case 'hf:NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO':
-        model = 'hf:NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO';
-        break;
-      case 'hf:Qwen/Qwen2.5-7B-Instruct':
-        model = 'hf:Qwen/Qwen2.5-7B-Instruct';
-        break;
-      case 'hf:upstage/SOLAR-10.7B-Instruct-v1.0':
-        model = 'hf:upstage/SOLAR-10.7B-Instruct-v1.0';
-        break;
-      case 'hf:nvidia/Llama-3.1-Nemotron-70B-Instruct-HF':
-        model = 'hf:nvidia/Llama-3.1-Nemotron-70B-Instruct-HF';
-        break;
-      default:
-        model = 'hf:meta-llama/Llama-3.1-405B-Instruct'; // Default model
-    }
-    await ctx.reply(`Model selected: ${model}`);
-    return model;
-  };
+  // Read content from index.md
+  const rawUsername = ctx.message.from.username || `user_${ctx.message.from.id}`;
+  const baseDir = process.env.DOWNLOAD_BASE_PATH;
+  const userDirPath = path.join(baseDir, validateUsername(rawUsername));
+  const indexFilePath = path.join(userDirPath, 'index.md');
 
-  model = await selectModel(userMessage);
+  let contentInstructions = '';
+
+  try {
+    contentInstructions = await fs.readFile(indexFilePath, 'utf-8');
+  } catch (error) {
+    console.error('Failed to read index.md:', error);
+    await ctx.reply('Could not read instructions. Please try again later.');
+    return;
+  }
 
   // Check if the message is a text message
   if (!userMessage) {
@@ -95,7 +46,7 @@ export const handleTextMessage = asyncHandler(async (ctx) => {
       messages: [
         {
           role: 'system',
-          content: 'You are a test assistant.',
+          content: contentInstructions, // Use the content from index.md
         },
         {
           role: 'user',
