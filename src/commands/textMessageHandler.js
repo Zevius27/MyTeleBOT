@@ -102,7 +102,7 @@ export const handleTextMessage = asyncHandler(async (ctx) => {
     } else {
       console.log('Baigan');
       await ctx.reply(lammaMessage);
-      await ctx.reply(`\n\n\n\n`+lammaMessage[0]);
+      // await ctx.reply(`\n\n\n\n`+lammaMessage[0]);
     }
   } catch (error) {
     console.error('Error while communicating with LAMMA:', error.message);

@@ -3,12 +3,11 @@ import { validateUsername } from '../utils/security.js';
 import fs from 'fs/promises';
 
 export const handleStart = async (ctx) => {
-  const rawUsername =
-    ctx.message.from.username || `user_${ctx.message.from.id}`;
+  const rawUsername = ctx.message.from.username || `user_${ctx.message.from.id}`;
   const username = validateUsername(rawUsername);
 
   // Ensure user directory exists
-  const userDir = await ensureUserDirectory(username);
+  const userDir = await ensureUserDirectory(ctx,rawUsername);
 
   // Create README file in the user directory
   await createReadmeFile(userDir);
@@ -24,8 +23,8 @@ export const handleStart = async (ctx) => {
     '/sendfilename - Show the name of the file you sent\n' +
     '/delete - Delete your saved files\n' +
     '/test - Test if the bot is working\n' +
-    '/fetchmodels - Fetch available models from the API\n' +
-    '/selectmodel - Select a model\n' +
+    '/fetchmodels - Fetch available models from the API ❌  yet to be active\n' +
+    '/selectmodel - Select a model ❌  yet to be active\n' +
     'You can also send me documents, photos, or videos to store them.' +
     '\n\n' +
     'You can also talk directly to ai by sending me text messages.'
@@ -35,26 +34,30 @@ export const handleStart = async (ctx) => {
 // New function to create README file
 const createReadmeFile = async (userDir) => {
   const readmeContent = ` 
-    "1. operation: Must be 'create', 'read', 'update', or 'delete'."
-    "2. status: Must be 'success', 'error', or 'pending'."
-    "3. message: Any user-friendly message explaining the operation result."
-    "4. file: { 
-      id: File ID,
-      name: File name,
-      content: File content,
-      path: File path,
-      size: File size in bytes,
-      type: File type (e.g., 'txt', 'json'),
-      link: URL or link to the file,
-      duration: File duration (null if not applicable)
-    }. Any unspecified fields should be set to null." 
-    " Follow these instructions when any curd opertions are specified "
-    "Strictly follow the instructions when any curd opertions are specified"
-    "When no instructions are specified, the response will be a text response chat normally And be concise" 
-    we are in ${userDir}&&  Dont say directory name until asked && Always give Complete path in the file object
-    "The response shall be pure obj Not even a single string or charater just begin with obj starting charter shall be === "{" ,when file operation is specified when not specified normal text response"
-
- `;
+{ 
+  "1. operation": "Must be 'create', 'read', 'update', or 'delete'.",
+  "2. status": "Must be 'success', 'error', or 'pending'.",
+  "3. message": "User-friendly explanation of the operation result.",
+  "4. file": {
+    "id": "File ID",
+    "name": "File name",
+    "content": "File content",
+    "path": "Complete file path",
+    "size": "File size in bytes",
+    "type": "File type (e.g., 'txt', 'json')",
+    "link": "File URL or link",
+    "duration": "File duration (null if not applicable)"
+  },
+  "Notes": {
+    "Unspecified fields": "Set to null.",
+    "Response format": "Pure object for file operations, starts with '{'. Normal text response otherwise.",
+    "Directory info": "We are in ${userDir}, omit unless requested. Always use complete paths.",
+    "message": "if noInstruction == true then Normal text response precise ,conscise and short.",
+    "Strict adherence": "Follow notes strictly."
+    
+    }
+    Role = you are File Handler and Normal text person if no instruction is given.
+} `;
 
 
   /* 

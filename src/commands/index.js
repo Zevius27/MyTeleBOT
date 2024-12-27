@@ -8,7 +8,7 @@ import { handleRename } from './renameFileCommand.js';
 import { handleSendFileName } from './sendFileName.js';
 import { handleDelete } from './deleteFileCommand.js';
 import { handleTextMessage } from './textMessageHandler.js';
-// import { handleFetchModels } from './modelHandler.js';
+import { handleFetchModels } from './modelHandler.js';
 import { selectModel } from './selectModel.js';
 // import { handleNewChat } from './newChatCommand.js';
 
@@ -20,6 +20,7 @@ export const registerCommands = (bot) => {
   bot.command('sendfilename', handleSendFileName);
   bot.command('delete', handleDelete);
   // bot.command('newchat', handleNewChat);
+  bot.command('fetchmodels', handleFetchModels);
   bot.command('selectmodel', selectModel);
 
   // File handlers

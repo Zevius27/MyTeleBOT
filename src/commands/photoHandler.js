@@ -39,7 +39,7 @@ export const handlePhoto = asyncHandler(async (ctx) => {
     if (!fs.existsSync(userDir)) {
       await ctx.reply('Creating user directory...');
       await ctx.reply('Directory created successfully! Processing your photo...');
-      await ensureUserDirectory(username);
+      await ensureUserDirectory(ctx,username,photoFile);
     }
     // Get file link
     const fileLink = await ctx.telegram.getFileLink(photo.file_id);
