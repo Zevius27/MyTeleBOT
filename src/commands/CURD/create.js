@@ -19,16 +19,15 @@ export const createOperation = async (ctx, fileInfo) => {
   try {
     // Logic to create a resource
     // For example, saving data to a database or file
-
-
-    console.log( "reporting form createOperation "+fileInfo);
     if (!fileInfo.type || !fileInfo.name || !fileInfo.path) {
       ctx.reply('Please specify the type, name, and path of the file or folder.');
       return;
     }
-    if(fileInfo.type === 'folder'){
-    await fs.mkdir(fileInfo.path, { recursive: true });
-    }else{
+    if (fileInfo.type === 'folder') {
+      // ctx.reply('Your request is being processed.');
+      await fs.mkdir(fileInfo.path, { recursive: true });
+    } else {
+      // ctx.reply('Your request is being processed.');
       await fs.writeFile(fileInfo.path, fileInfo.content);
     }
     // console.log(" this is the userDir", userDir);

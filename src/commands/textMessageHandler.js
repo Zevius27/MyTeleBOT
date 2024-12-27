@@ -100,7 +100,7 @@ export const handleTextMessage = asyncHandler(async (ctx) => {
       indexCURD(ctx, lammaMessage);
       
     } else {
-      console.log('Baigan');
+      // console.log('Baigan');
       await ctx.reply(lammaMessage);
       // await ctx.reply(`\n\n\n\n`+lammaMessage[0]);
     }
@@ -119,12 +119,10 @@ async function indexCURD(ctx, lammaMessage) {
   let result;
   const { operation, status, message, file } = JSON.parse(lammaMessage);
   try {
-    ctx.reply('Your request is being processed.');
+    ctx.reply('Your request has been processed.');
     switch (operation) {
       case 'create':
         result = await createOperation(ctx, file);// Is in create.js
-        await ctx.reply(result[2]);
-        await ctx.reply(lammaMessage);
         break;
       case 'read':
         result = await readOperation(ctx, file); // Is in read.js 
