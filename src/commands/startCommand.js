@@ -6,10 +6,10 @@ import dotenv from "dotenv"
 dotenv.config()
 
 export const handleStart = async (ctx) => {
-
+  const baseDir = process.env.DOWNLOAD_BASE_PATH; // Ensure baseDir is consistent
 
   // Create README file in the user directory
-  await createReadmeFile( process.env.DOWNLOAD_BASE_PATH);
+  await createReadmeFile(ctx, baseDir);
 
   // Create default chat
   console.log('Start command received');
@@ -31,9 +31,9 @@ export const handleStart = async (ctx) => {
 };
 
 // New function to create README file
-const createReadmeFile = async (userDir) => {
-  const readmeContent = ` 
-{ 
+const createReadmeFile = async (ctx, baseDir) => {
+  let userName = ctx.message.from.username || `user_${ctx.message.from.id}`;
+  const readmeContent = `{ 
   "1. operation": "Must be 'create', 'read', 'update', or 'delete'.",
   "2. status": "Must be 'success', 'error', or 'pending'.",
   "3. message": "User-friendly explanation of the operation result.",
@@ -50,24 +50,20 @@ const createReadmeFile = async (userDir) => {
   "Notes": {
     "Unspecified fields": "Set to null.",
     "Response format": "Pure object for file operations, starts with '{'. Normal text response otherwise.",
-    "Directory info": "We are in ${userDir}, omit unless requested. Always use complete paths.",
+    "Directory info": "We are in ${baseDir}/${userName}, omit unless requested. Always use complete paths.",
     "message": "if noInstruction == true then Normal text response precise ,conscise and short.",
     "Strict adherence": "Follow notes strictly."
     
     }
     Role = you are File Handler and Normal text person if no instruction is given.
-} `;
-
-
-  const readmePath = `${userDir}/index.md`;
-
-  try {
-    // Check if index.md already exists
-    await fs.access(readmePath);
-    await ctx.reply('The README file already exists.'); // Send a message if the file is already there
-  } catch (error) {
-    // If the file does not exist, create it
-    await fs.writeFile(readmePath, readmeContent);
-    console.log('README file created successfully');
-  }
-};
+    } `;
+   try {
+       await fs.access(baseDir); // Check if baseDir exists
+       await fs.mkdir(baseDir, { recursive: true }); // Create baseDir if it doesn't exist
+       await fs.writeFile(`${baseDir}/index.md`, readmeContent); // Create README file
+       await fs.mkdir(`${baseDir}/${userName}`,{recursive:true}); // Create userName file
+       await fs.writeFile(`${baseDir}/${userName}/index.md`,readmeContent)
+   } catch (error) {
+      //  console.error('Error creating files:', error);
+   }
+ };
