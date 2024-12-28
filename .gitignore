@@ -59,3 +59,15 @@ out/
 # Misc
 .DS_Store
 Thumbs.db
+
+# Ignore Google Cloud credentials
+config/xevis-vision-api.json
+
+# Other common files to ignore
+node_modules/
+.env
+
+
+
+
+
