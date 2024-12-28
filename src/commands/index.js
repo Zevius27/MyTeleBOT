@@ -23,7 +23,7 @@ export const registerCommands = (bot) => {
   // bot.command('newchat', handleNewChat);
   bot.command('fetchmodels', handleFetchModels);
   bot.command('selectmodel', selectModel);
-  bot.command('btntest', handleBtnTest);
+  bot.command('Imgprocessing', handleBtnTest);
   
   // Register button handlers
   bot.action('toggle_button', handleToggleButton);

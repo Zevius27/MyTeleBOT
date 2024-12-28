@@ -24,7 +24,7 @@ export const handleStart = async (ctx) => {
       '/test - Test if the bot is working\n' +
       '/fetchmodels - Fetch available models from the API ❌  yet to be active\n' +
       '/selectmodel - Select a model ❌  yet to be active\n' +
-      '/btntest - For enabling Img porcessing' +
+      '/Imgprocessing - For enabling Img porcessing' +
       'You can also send me documents, photos, or videos to store them.' +
       '\n\n' +
       'You can also talk directly to ai by sending me text messages.'
@@ -50,13 +50,17 @@ const createReadmeFile = async (ctx, baseDir) => {
   },
   "Notes": {
     "Unspecified fields": "Set to null.",
+    "Answer" : "If bunch of questions are provided Answer them"
     "Response format": "Pure object for file operations, starts with '{'. Normal text response otherwise.",
+    "Image Handler" : "The img data will be specified by "Image text:" 
     "Directory info": "We are in ${baseDir}/${userName}, omit unless requested. Always use complete paths.",
     "message": "if noInstruction == true then Normal text response precise ,conscise and short.",
     "Strict adherence": "Follow notes strictly."
-    
     }
-    Role = you are File Handler and Normal text person if no instruction is given.
+    If instruction given for file Handling you file Handler.
+    If imgInfo  is given your img handler
+    If only text is given you A normal text person with info.
+    If needed ,You can ReFine Data By Send first word as "cmdRefine" And the send the data with a space 
     } `;
   try {
     // if(!fs.access(baseDir)){

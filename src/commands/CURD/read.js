@@ -1,5 +1,6 @@
 import { DirectoryError } from '../../utils/errors.js';
 import fs from 'fs/promises';
+import { validateUsername } from '../../utils/security.js';
 
 
 

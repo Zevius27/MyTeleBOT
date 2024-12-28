@@ -7,27 +7,41 @@ import { createOperation } from './CURD/create.js';
 import { readOperation } from './CURD/read.js';
 import { updateOperation } from './CURD/update.js';
 import { deleteOperation } from './CURD/delete.js';
-
+// import { validateUsername } from '../utils/security.js';
 // Define the handleTextMessage function
-export const handleTextMessage = asyncHandler(async (ctx) => {
-  const userMessage = ctx.message.text;
+export const handleTextMessage = asyncHandler(async (ctx, imageData = false) => {
+  let userMessage = "";
+
+  // Check if imageData is provided
+  if (imageData) {
+    userMessage = `Image text: ${imageData.content}`;
+  } else {
+    userMessage = ctx.message.text;
+  }
+
   const model = process.env.MODEL_NAME;
 
   // Get the username to locate the README file
-  const rawUsername =
-    ctx.message.from.username || `user_${ctx.message.from.id}`;
+  const rawUsername = ctx.message.from.username || `user_${ctx.message.from.id}`;
   const username = validateUsername(rawUsername);
   const baseDir = process.env.DOWNLOAD_BASE_PATH;
   const userDir = `${baseDir}/${username}`;
-  const readmePath = `${userDir}/index.md` || `${baseDir}/index.md`; // Path to the README file
+  const readmePath = `${userDir}/index.md`;
 
   // Read instructions from the README file
   let instructions;
   try {
     instructions = await fs.readFile(readmePath, 'utf-8');
+    
+    // // Add context for image data
+    // if (imageData && imageData.type === 'image_text') {
+    //   instructions += '\nProcessing text extracted from an image. ' +
+    //     'This text was obtained through OCR and may need formatting corrections. ' +
+    //     `File reference: ${imageData.metadata.filename}`;
+    // }
   } catch (error) {
     console.error('Error reading README file:', error.message);
-    instructions = 'Send : /start once to get started'; // Fallback instructions if the file cannot be read
+    instructions = 'Send : /start once to get started';
   }
 
   // Check if the message is a text message
@@ -77,7 +91,9 @@ export const handleTextMessage = asyncHandler(async (ctx) => {
     const responseData = await aiResponse.json();
     const aiMessage = responseData.choices[0].message.content; // Extracting the content from the response
     // Send the response back to the user
-
+    console.log(aiMessage);
+    
+    // await ctx.reply(aiMessage);
     if (aiMessage[0] === '{') {
       console.log('The response is an object:', aiMessage + '\n\n\n');
       indexCURD(ctx, aiMessage);
