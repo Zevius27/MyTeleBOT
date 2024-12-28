@@ -62,7 +62,7 @@ export const selectModel =  async (ctx) => {
         modelName = 'hf:nvidia/Llama-3.1-Nemotron-70B-Instruct-HF';
         break;
       default:
-        modelName = 'hf:meta-llama/Llama-3.1-405B-Instruct'; // Default model
+        modelName = 'hf:huihui-ai/Llama-3.3-70B-Instruct-abliterated'; // Default model
     }
     process.env.MODEL_NAME = modelName;
     await ctx.reply(`Model changed to ${modelName} \n\n` +

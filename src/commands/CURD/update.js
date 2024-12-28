@@ -10,7 +10,7 @@ export const updateOperation = async (ctx, fileInfo) => {
       ctx.reply("file does not exists please create the file");
       return;
     }
-    fs.appendFile(fileInfo.path, fileInfo.content);
+    fs.appendFileSync(fileInfo.path, fileInfo.content);
 
     return ['update', 'success', `Resource with ${fileInfo.name} updated successfully`];
   } catch (error) {

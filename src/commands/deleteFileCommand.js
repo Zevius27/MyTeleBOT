@@ -5,24 +5,18 @@ import { validateUsername } from '../utils/security.js';
 import { DirectoryError } from '../utils/errors.js';
 
 export const handleDelete = asyncHandler(async (ctx) => {
-  // Get filename from command
   const filename = ctx.message.text.replace('/delete ', '').trim();
   
   if (!filename) {
-    await ctx.reply(
-      'Usage: /delete <filename>\n\n' +
-      'Example: /delete photo_123.jpg'
-    );
+    await ctx.reply('Usage: /delete <filename>\nExample: /delete document.pdf');
     return;
   }
 
   const rawUsername = ctx.message.from.username || `user_${ctx.message.from.id}`;
   const username = validateUsername(rawUsername);
-  
   const baseDir = process.env.DOWNLOAD_BASE_PATH;
   const userDir = `${baseDir}/${username}`;
 
-  // Check if user directory exists
   if (!fs.existsSync(userDir)) {
     await ctx.reply('No files found. Please upload some files first.');
     return;

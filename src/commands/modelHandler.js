@@ -6,10 +6,10 @@ export const handleFetchModels = asyncHandler(async (ctx) => {
    try {
       const headers = {
          'Content-Type': 'application/json',
-         'Authorization': `Bearer ${process.env.LAMMA_API_KEY}`
+         'Authorization': `Bearer ${process.env.AI_API_KEY}`
       };
 
-      const uri = `${process.env.LAMMA_URI}/models`;
+      const uri = `${process.env.BASE_URL}/models`;
 
       const response = await fetch(uri, {
          method: 'GET',

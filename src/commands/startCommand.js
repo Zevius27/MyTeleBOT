@@ -1,16 +1,15 @@
 import { ensureUserDirectory } from '../utils/fileUtils.js';
 import { validateUsername } from '../utils/security.js';
 import fs from 'fs/promises';
+import dotenv from "dotenv"
+
+dotenv.config()
 
 export const handleStart = async (ctx) => {
-  const rawUsername = ctx.message.from.username || `user_${ctx.message.from.id}`;
-  const username = validateUsername(rawUsername);
 
-  // Ensure user directory exists
-  const userDir = await ensureUserDirectory(ctx,rawUsername);
 
   // Create README file in the user directory
-  await createReadmeFile(userDir);
+  await createReadmeFile( process.env.DOWNLOAD_BASE_PATH);
 
   // Create default chat
   console.log('Start command received');
@@ -59,22 +58,6 @@ const createReadmeFile = async (userDir) => {
     Role = you are File Handler and Normal text person if no instruction is given.
 } `;
 
-
-  /* 
-  "1. operation: Must be 'create', 'read', 'update', or 'delete'."
-  "2. status: Must be 'success', 'error', or 'pending'."
-  "3. message: Any user-friendly message explaining the operation result."
-  "4. file: { 
-    id: File ID,
-    name: File name,
-    content: File content,
-    path: File path,
-    size: File size in bytes,
-    type: File type (e.g., 'txt', 'json'),
-    link: URL or link to the file,
-    duration: File duration (null if not applicable)
-  }. Any unspecified fields should be set to null."
-  */
 
   const readmePath = `${userDir}/index.md`;
 

@@ -12,6 +12,17 @@ describe('Security Utils', () => {
       expect(sanitizeFilename('test.JPG')).toBe('test.JPG');
       expect(sanitizeFilename('doc.PDF')).toBe('doc.PDF');
     });
+
+    it('should handle path traversal attempts', () => {
+      expect(sanitizeFilename('../../../etc/passwd')).toBe('etcpasswd');
+      expect(sanitizeFilename('..\\Windows\\System32')).toBe('WindowsSystem32');
+    });
+
+    it('should handle empty or invalid input', () => {
+      expect(sanitizeFilename('')).toMatch(/^file_\d+$/);
+      expect(sanitizeFilename(null)).toThrow('Invalid filename');
+      expect(sanitizeFilename(undefined)).toThrow('Invalid filename');
+    });
   });
 
   describe('validateUsername', () => {

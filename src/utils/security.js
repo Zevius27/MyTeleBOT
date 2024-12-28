@@ -6,24 +6,17 @@ export const sanitizeFilename = (filename) => {
     throw new SecurityError('Invalid filename');
   }
 
-  // Remove any path traversal attempts
-  const sanitized = path.basename(filename);
+  // Remove path traversal attempts
+  const sanitized = filename
+    .replace(/^\.+[/\\]*/g, '') // Remove leading dots and slashes
+    .replace(/[/\\]+/g, '') // Remove path separators
+    .trim();
 
-  // Get the extension and name parts
-  const extension = path.extname(sanitized);
-  const name = path.basename(sanitized, extension);
-
-  // Clean the name part while preserving valid characters
-  const cleanedName = name.replace(/[^a-zA-Z0-9_\-\s]/g, '')
-    .trim()
-    .replace(/\s+/g, '_');
-
-  // Handle empty name case
-  if (!cleanedName) {
-    return `file_${Date.now()}${extension}`;
+  if (!sanitized) {
+    throw new SecurityError('Invalid filename after sanitization');
   }
 
-  return `${cleanedName}${extension}`;
+  return sanitized;
 };
 
 

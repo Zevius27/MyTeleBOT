@@ -1,37 +1,36 @@
-// The command is searching in the current working directory (CWD)
-// To specify a different directory, use the --directory or -d option
-// For example: create --directory /path/to/directory
-// import { ensureUserDirectory } from '../../utils/fileUtils.js';
-// import { createReadmeFile } from '../../utils/fileUtils.js';
-// import { validateUsername } from '../../utils/security.js';
-// import fs from 'fs/promises';
-// import path from 'path';
 import { DirectoryError } from '../../utils/errors.js';
-import fs from 'fs/promises';
-import path from 'path';
-import { validateUsername } from '../../utils/security.js';
-// import { ensureUserDirectory } from '../../utils/fileUtils.js';
-import { Console, log } from 'console';
-import { console } from 'inspector';
-// import { validateDirectoryPath } from '../../utils/fileUtils.js';
+import fs from 'fs';
 
-export const createOperation = async (ctx, fileInfo) => {
+
+
+export const createOperation = (ctx, fileInfo) => {
   try {
-    // Logic to create a resource
-    // For example, saving data to a database or file
-    if (!fileInfo.type || !fileInfo.name || !fileInfo.path) {
-      ctx.reply('Please specify the type, name, and path of the file or folder.');
-      return;
-    }
-    if (fileInfo.type === 'folder') {
-      // ctx.reply('Your request is being processed.');
-      await fs.mkdir(fileInfo.path, { recursive: true });
+    // Check if fileInfo is an array (multiple files) or single object
+    if (Array.isArray(fileInfo)) {
+      // Handle multiple files
+      fileInfo.forEach(file => {
+        if (!file.type || !file.name || !file.path) {
+          throw new DirectoryError('Please specify the type, name, and path for all files.');
+        }
+        if (file.type === 'folder') {
+          fs.mkdirSync(file.path, { recursive: true });
+        } else {
+          fs.writeFileSync(file.path, file.content || '');
+        }
+      });
+      return ['create', 'success', 'Multiple resources created successfully'];
     } else {
-      // ctx.reply('Your request is being processed.');
-      await fs.writeFile(fileInfo.path, fileInfo.content);
+      // Handle single file
+      if (!fileInfo.type || !fileInfo.name || !fileInfo.path) {
+        throw new DirectoryError('Please specify the type, name, and path of the file or folder.');
+      }
+      if (fileInfo.type === 'folder') {
+        fs.mkdirSync(fileInfo.path, { recursive: true });
+      } else {
+        fs.writeFileSync(fileInfo.path, fileInfo.content || '');
+      }
+      return ['create', 'success', 'Resource created successfully'];
     }
-    // console.log(" this is the userDir", userDir);
-    return ['create', 'success', 'Resource created successfully'];
   } catch (error) {
     throw new DirectoryError('Failed to create resource: ' + error.message);
   }
