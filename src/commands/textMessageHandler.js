@@ -69,7 +69,7 @@ export const handleTextMessage = asyncHandler(async (ctx) => {
     if (!aiResponse.ok) {
       const errorText = await aiResponse.text();
       throw new Error(
-        `Failed to fetch response from LAMMA. Status: ${aiResponse.status}. Details: ${errorText}`
+        `Failed to fetch response from Ai. Status: ${aiResponse.status}. Details: ${errorText}`
       );
     }
 
@@ -92,23 +92,24 @@ export const handleTextMessage = asyncHandler(async (ctx) => {
 
 // AI CURD operations
 async function indexCURD(ctx, aiMessage) {
+  let parsedMessage;
   try {
-    const { operation, status, message, file } = JSON.parse(aiMessage);
-    ctx.reply('Your request has been processed.');
+    parsedMessage = JSON.parse(aiMessage);
+    const { operation, status, message, file } = parsedMessage;
 
     let result;
     switch (operation) {
       case 'create':
-        result = await createOperation(ctx, file);
+        result = createOperation(ctx, file);
         break;
       case 'read':
-        result = await readOperation(ctx, file);
+        result = readOperation(ctx, file);
         break;
       case 'update':
-        result = await updateOperation(ctx, file);
+        result = updateOperation(ctx, file);
         break;
       case 'delete':
-        result = await deleteOperation(ctx, file);
+        result = deleteOperation(ctx, file);
         break;
       default:
         throw new Error('Invalid operation');

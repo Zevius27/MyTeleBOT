@@ -34,10 +34,10 @@ export const handleStart = async (ctx) => {
 const createReadmeFile = async (ctx, baseDir) => {
   let userName = ctx.message.from.username || `user_${ctx.message.from.id}`;
   const readmeContent = `{ 
-  "1. operation": "Must be 'create', 'read', 'update', or 'delete'.",
-  "2. status": "Must be 'success', 'error', or 'pending'.",
-  "3. message": "User-friendly explanation of the operation result.",
-  "4. file": {
+  1. "operation": "Must be 'create', 'read', 'update', or 'delete'.",
+  2. "status": "Must be 'success', 'error', or 'pending'.",
+  3. "message": "User-friendly explanation of the operation result.",
+  4. "file": {
     "id": "File ID",
     "name": "File name",
     "content": "File content",
@@ -58,12 +58,15 @@ const createReadmeFile = async (ctx, baseDir) => {
     Role = you are File Handler and Normal text person if no instruction is given.
     } `;
    try {
-       await fs.access(baseDir); // Check if baseDir exists
+    // if(!fs.access(baseDir)){
+    //   ctx.reply("creating base dir")
+    // }
+        // Check if baseDir exists
        await fs.mkdir(baseDir, { recursive: true }); // Create baseDir if it doesn't exist
        await fs.writeFile(`${baseDir}/index.md`, readmeContent); // Create README file
        await fs.mkdir(`${baseDir}/${userName}`,{recursive:true}); // Create userName file
        await fs.writeFile(`${baseDir}/${userName}/index.md`,readmeContent)
    } catch (error) {
-      //  console.error('Error creating files:', error);
+       console.error('Error creating files:', error);
    }
  };
