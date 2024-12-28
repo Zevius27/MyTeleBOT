@@ -1,9 +1,9 @@
 import { ensureUserDirectory } from '../utils/fileUtils.js';
 import { validateUsername } from '../utils/security.js';
 import fs from 'fs/promises';
-import dotenv from "dotenv"
+import dotenv from 'dotenv';
 
-dotenv.config()
+dotenv.config();
 
 export const handleStart = async (ctx) => {
   const baseDir = process.env.DOWNLOAD_BASE_PATH; // Ensure baseDir is consistent
@@ -15,18 +15,19 @@ export const handleStart = async (ctx) => {
   console.log('Start command received');
   await ctx.reply(
     'Welcome to the File Storage Bot! 👋\n\n' +
-    'I can help you store and manage your files in the downloads directory. Here are the available commands:\n\n' +
-    '/start - Show this welcome message\n' +
-    '/help - Show help information\n' +
-    '/rename - Rename your saved files\n' +
-    '/sendfilename - Show the name of the file you sent\n' +
-    '/delete - Delete your saved files\n' +
-    '/test - Test if the bot is working\n' +
-    '/fetchmodels - Fetch available models from the API ❌  yet to be active\n' +
-    '/selectmodel - Select a model ❌  yet to be active\n' +
-    'You can also send me documents, photos, or videos to store them.' +
-    '\n\n' +
-    'You can also talk directly to ai by sending me text messages.'
+      'I can help you store and manage your files in the downloads directory. Here are the available commands:\n\n' +
+      '/start - Show this welcome message\n' +
+      '/help - Show help information\n' +
+      '/rename - Rename your saved files\n' +
+      '/sendfilename - Show the name of the file you sent\n' +
+      '/delete - Delete your saved files\n' +
+      '/test - Test if the bot is working\n' +
+      '/fetchmodels - Fetch available models from the API ❌  yet to be active\n' +
+      '/selectmodel - Select a model ❌  yet to be active\n' +
+      '/btntest - For enabling Img porcessing' +
+      'You can also send me documents, photos, or videos to store them.' +
+      '\n\n' +
+      'You can also talk directly to ai by sending me text messages.'
   );
 };
 
@@ -57,16 +58,16 @@ const createReadmeFile = async (ctx, baseDir) => {
     }
     Role = you are File Handler and Normal text person if no instruction is given.
     } `;
-   try {
+  try {
     // if(!fs.access(baseDir)){
     //   ctx.reply("creating base dir")
     // }
-        // Check if baseDir exists
-       await fs.mkdir(baseDir, { recursive: true }); // Create baseDir if it doesn't exist
-       await fs.writeFile(`${baseDir}/index.md`, readmeContent); // Create README file
-       await fs.mkdir(`${baseDir}/${userName}`,{recursive:true}); // Create userName file
-       await fs.writeFile(`${baseDir}/${userName}/index.md`,readmeContent)
-   } catch (error) {
-       console.error('Error creating files:', error);
-   }
- };
+    // Check if baseDir exists
+    await fs.mkdir(baseDir, { recursive: true }); // Create baseDir if it doesn't exist
+    await fs.writeFile(`${baseDir}/index.md`, readmeContent); // Create README file
+    await fs.mkdir(`${baseDir}/${userName}`, { recursive: true }); // Create userName file
+    await fs.writeFile(`${baseDir}/${userName}/index.md`, readmeContent);
+  } catch (error) {
+    console.error('Error creating files:', error);
+  }
+};

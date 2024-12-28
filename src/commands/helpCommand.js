@@ -10,6 +10,7 @@ export const handleHelp = async (ctx) => {
       '/test - Test if bot is working\n' +
       '/fetchmodels - Fetch available models from the API\n' +
       '/selectmodel - Select a model\n' +
+      '/btntest - For enabling Img porcessing' +
       'You can also send me images to use Gemini to generate text from them. By command: /imgtogemini' +
       '\n\n' +
       'Supported file types:\n' +

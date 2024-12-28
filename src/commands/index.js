@@ -10,6 +10,7 @@ import { handleDelete } from './deleteFileCommand.js';
 import { handleTextMessage } from './textMessageHandler.js';
 import { handleFetchModels } from './modelHandler.js';
 import { selectModel } from './selectModel.js';
+import { handleBtnTest, handleToggleButton } from './btntest.js';
 // import { handleNewChat } from './newChatCommand.js';
 
 export const registerCommands = (bot) => {
@@ -22,12 +23,16 @@ export const registerCommands = (bot) => {
   // bot.command('newchat', handleNewChat);
   bot.command('fetchmodels', handleFetchModels);
   bot.command('selectmodel', selectModel);
-
+  bot.command('btntest', handleBtnTest);
+  
+  // Register button handlers
+  bot.action('toggle_button', handleToggleButton);
+  
   // File handlers
   bot.on('document', handleDocument);
   bot.on('photo', handlePhoto);
   bot.on('video', handleVideo);
-  
+
   // Listen for text messages
   bot.on('text', handleTextMessage);
 };
