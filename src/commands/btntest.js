@@ -5,7 +5,7 @@ const userStates = new Map(); // Use Map for user states
 export const handleBtnTest = async (ctx) => {
   const userId = ctx.from.id;
   userStates.set(userId, false); // Initialize state for new user
-
+  console.log("first state",userStates);
   try {
     await ctx.reply(
       'Button For AI Image Processing',
@@ -48,7 +48,10 @@ export const handleToggleButton = async (ctx) => {
 
 export async function getButtonState(ctx, userId = 1208927174) {
   const isProcessing = userStates.get(userId);
-  const stateMessage = isProcessing ? "Image processing is on" : "Image processing is off";
+  if (isProcessing === undefined) {
+    userStates.set(userId, false); // Initialize state for new user
+  }
+  const stateMessage = isProcessing ? `Image processing is on` : `Image processing is off `;
   console.log(stateMessage);
   await ctx.reply(stateMessage);
   return isProcessing;

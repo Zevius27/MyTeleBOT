@@ -7,6 +7,7 @@ import { sanitizeFilename, validateUsername } from '../utils/security.js';
 import { DirectoryError } from '../utils/errors.js';
 import { getButtonState } from './btntest.js';
 import { detectText } from './visionHandler.js';
+import { handleTextMessage } from './textMessageHandler.js';
 // import {handleTextMessage} from './textMessageHandler.js';
 
 export const handlePhoto = asyncHandler(async (ctx) => {
@@ -71,8 +72,28 @@ export const handlePhoto = asyncHandler(async (ctx) => {
         { parse_mode: 'HTML' }
       );
     } else {
-      console.log("prcoessing");
-      // detectText(filePath)
+      console.log("processing");
+      let text = await detectText(ctx, filePath);
+      let jsonConverter = photoFile.file_name;
+      jsonConverter = jsonConverter.replace(".jpg", ".json");
+      jsonConverter = jsonConverter.replace(".png", ".json");
+      jsonConverter = jsonConverter.replace(".jpeg", ".json");
+      jsonConverter = jsonConverter.replace(".JPG", ".json");
+      jsonConverter = jsonConverter.replace(".PNG", ".json");
+      jsonConverter = jsonConverter.replace(".JPEG", ".json");
+
+      const jsonFilePath = `${userDir}/${jsonConverter}`;
+      
+      // Write text content to JSON file
+      await fs.promises.writeFile(jsonFilePath, JSON.stringify(text, null, 2));
+      
+      // logic to pass the file path or data to ai
+      // read json file path
+      ctx.message.imgText = fs.readFileSync(jsonFilePath, 'utf-8');
+      handleTextMessage(ctx);      
+      await ctx.reply(
+        `Photo processed successfully!\nText extracted and saved to: ${jsonConverter}`
+      );
 
     }
   } catch (error) {

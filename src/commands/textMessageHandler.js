@@ -10,6 +10,8 @@ import { deleteOperation } from './CURD/delete.js';
 
 // Define the handleTextMessage function
 export const handleTextMessage = asyncHandler(async (ctx) => {
+ 
+   
   const userMessage = ctx.message.text;
   const model = process.env.MODEL_NAME;
 
@@ -25,11 +27,17 @@ export const handleTextMessage = asyncHandler(async (ctx) => {
   let instructions;
   try {
     instructions = await fs.readFile(readmePath, 'utf-8');
+    if(ctx.message.imgText) {
+      const imgTextObj = JSON.parse(ctx.message.imgText);
+      console.log(imgTextObj.fullText);
+      instructions = `\nImage text Send what you see after this line: ${JSON.stringify(imgTextObj.fullText)}`;
+      // return
+    };
   } catch (error) {
     console.error('Error reading README file:', error.message);
     instructions = 'Send : /start once to get started'; // Fallback instructions if the file cannot be read
   }
-
+  
   // Check if the message is a text message
   if (!userMessage) {
     await ctx.reply('Please send a valid text message.');

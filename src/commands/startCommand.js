@@ -25,7 +25,7 @@ export const handleStart = async (ctx) => {
       '/fetchmodels - Fetch available models from the API ❌  yet to be active\n' +
       '/selectmodel - Select a model ❌  yet to be active\n' +
       '/Imgprocessing - For enabling Img porcessing' +
-      'You can also send me documents, photos, or videos to store them.' +
+      '\n You can also send me documents, photos, or videos to store them.(Only the last Sent message of img processing shall be on)' +
       '\n\n' +
       'You can also talk directly to ai by sending me text messages.'
   );
