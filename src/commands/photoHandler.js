@@ -62,7 +62,7 @@ export const handlePhoto = asyncHandler(async (ctx) => {
 
     // Save file asynchronously
     await fs.promises.writeFile(filePath, buffer);
-    if (getButtonState === false) {
+    if (await getButtonState(ctx,1208927174) === false) {
       await ctx.reply(
         `Photo saved successfully!\n` +
           `Saved as: <code>${sanitizedName}</code>\n` +
@@ -71,7 +71,9 @@ export const handlePhoto = asyncHandler(async (ctx) => {
         { parse_mode: 'HTML' }
       );
     } else {
-      detectText(ctx,filePath)
+      console.log("prcoessing");
+      // detectText(filePath)
+
     }
   } catch (error) {
     console.error(error);
