@@ -30,7 +30,10 @@ export const handleTextMessage = asyncHandler(async (ctx) => {
     if(ctx.message.imgText) {
       const imgTextObj = JSON.parse(ctx.message.imgText);
       console.log(imgTextObj.fullText);
-      instructions = `\nImage text Send what you see after this line: ${JSON.stringify(imgTextObj.fullText)}`;
+      imgTextObj.fullText = imgTextObj.fullText.replaceAll(`\n`, ``); // Using replaceAll to replace all occurrences
+      instructions = `\nImage description: Send what you see after this line and Ignore distroted ones: ${JSON.stringify(imgTextObj.fullText)}`
+      console.log(instructions);
+      
       // return
     };
   } catch (error) {
